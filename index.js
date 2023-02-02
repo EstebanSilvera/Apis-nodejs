@@ -191,6 +191,34 @@ app.route('/users')
         })
 
     })
+    .patch((req, res) =>{
+        
+        const id = req.body.id
+
+        const empleadoObj = {
+            tipo_documento:req.body.tipo_documento,
+            cedula:req.body.cedula,
+            username:req.body.username,
+            nombre:req.body.nombre,
+            apellido:req.body.apellido,
+            telefono:req.body.telefono,
+            direccion:req.body.direccion,
+            correo:req.body.correo,
+            password:req.body.password,
+            cargo:req.body.cargo,
+            tipo_user:req.body.tipo_user,
+        }
+        
+        const sql = 'UPDATE usuario SET ? WHERE id= ? '
+
+        connection.query(sql,[empleadoObj,id], error =>{
+            if(error) throw error
+
+            res.send({
+                message: "Empleado actualizado"
+            });
+        })
+    })
 
 //LOGIN
 app.post('/login', (req, res) => {
@@ -423,8 +451,6 @@ app.post('/inventario', async (req, res) => {
     const sql = 'INSERT INTO inventario SET ?'
 
     const validacion = 'SELECT * FROM usuario WHERE usuario.username = ? '
-
-    //console.log(await connection.query(sql,sedeObj))
 
     connection.query(validacion, [username], (error, resultado) => {
         if (error) throw error;
@@ -663,6 +689,23 @@ app.route("/HojaVida")
             if (error) throw error;
             res.send({ message: `Hoja de vida del computador guardado` })
         })
+    })
+    .patch((req, res) =>{
+
+        const id = req.body.id
+        const estado = req.body.estado
+
+        const slq = 'UPDATE hoja_de_vida SET estado = ? WHERE id = ?'
+
+        connection.query(slq,[estado,id],error => {
+            if(error) throw error
+
+            res.send({
+                message: "Estado actualizado"
+            });
+
+        })
+
     })
 
 
