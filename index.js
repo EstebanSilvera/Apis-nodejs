@@ -88,6 +88,7 @@ app.route('/equipos')
                     observacion: req.body.observacion,
                     nombre: req.body.nombre,
                     grupo_trabajo: req.body.grupo_trabajo,
+                    admin: req.body.admin,
                     responsable: responsable,
                 };
 
