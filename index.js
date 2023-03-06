@@ -192,28 +192,28 @@ app.route('/users')
         })
 
     })
-    .patch((req, res) =>{
-        
+    .patch((req, res) => {
+
         const id = req.body.id
 
         const empleadoObj = {
-            tipo_documento:req.body.tipo_documento,
-            cedula:req.body.cedula,
-            username:req.body.username,
-            nombre:req.body.nombre,
-            apellido:req.body.apellido,
-            telefono:req.body.telefono,
-            direccion:req.body.direccion,
-            correo:req.body.correo,
-            password:req.body.password,
-            cargo:req.body.cargo,
-            tipo_user:req.body.tipo_user,
+            tipo_documento: req.body.tipo_documento,
+            cedula: req.body.cedula,
+            username: req.body.username,
+            nombre: req.body.nombre,
+            apellido: req.body.apellido,
+            telefono: req.body.telefono,
+            direccion: req.body.direccion,
+            correo: req.body.correo,
+            password: req.body.password,
+            cargo: req.body.cargo,
+            tipo_user: req.body.tipo_user,
         }
-        
+
         const sql = 'UPDATE usuario SET ? WHERE id= ? '
 
-        connection.query(sql,[empleadoObj,id], error =>{
-            if(error) throw error
+        connection.query(sql, [empleadoObj, id], error => {
+            if (error) throw error
 
             res.send({
                 message: "Empleado actualizado"
@@ -484,48 +484,61 @@ app.post('/inventario', async (req, res) => {
 });
 
 //AGREGAR AL USUARIO
-app.post('/adduser', async (req, res) => {
+app.route('/adduser')
+    .post((req, res) =>{
+        
+        const sql = 'SELECT * FROM usuario';
 
-    var username = req.body.username;
+        connection.query(sql ,(error, resultado) => {
+            if (error) throw error;
+            if (resultado.length > 0) {
+                res.json(resultado);
+            } else {
+                res.send("no hay resultados")
+            }
+        })
 
-    const sql = 'INSERT INTO usuario SET ?'
+    })
+    .put((req, res) => {
+        var username = req.body.username;
 
-    const validacion = 'SELECT * FROM usuario WHERE usuario.username = ? '
+        const sql = 'INSERT INTO usuario SET ?'
 
-    //console.log(await connection.query(sql,sedeObj))
+        const validacion = 'SELECT * FROM usuario WHERE usuario.username = ? '
 
-    connection.query(validacion, [username], (error, resultado) => {
-        if (error) throw error;
+        //console.log(await connection.query(sql,sedeObj))
 
-        if (resultado.length == 0) {
+        connection.query(validacion, [username], (error, resultado) => {
+            if (error) throw error;
 
-            const userObj = {
-                cedula: req.body.cedula,
-                tipo_documento: req.body.tipo_documento,
-                username: username,
-                nombre: req.body.nombre,
-                apellido: req.body.apellido,
-                telefono: req.body.telefono,
-                direccion: req.body.direccion,
-                correo: req.body.correo,
-                password: req.body.password,
-                cargo: req.body.cargo,
-                tipo_user: req.body.tipo_user,
-            };
+            if (resultado.length == 0) {
 
-            connection.query(sql, userObj, error => {
-                if (error) throw error;
-                res.send({ message: "Usuario  guardado" })
-            })
+                const userObj = {
+                    cedula: req.body.cedula,
+                    tipo_documento: req.body.tipo_documento,
+                    username: username,
+                    nombre: req.body.nombre,
+                    apellido: req.body.apellido,
+                    telefono: req.body.telefono,
+                    direccion: req.body.direccion,
+                    correo: req.body.correo,
+                    password: req.body.password,
+                    cargo: req.body.cargo,
+                    tipo_user: req.body.tipo_user,
+                };
 
-        } else {
-            res.send({
-                message: "ese usuario ya existe en la base de dato"
-            });
-        }
-    });
+                connection.query(sql, userObj, error => {
+                    if (error) throw error;
+                    res.send({ message: "Usuario  guardado" })
+                })
 
-});
+            } else {
+                res.send({
+                    message: "ese usuario ya existe en la base de dato"
+                });
+            }
+        });
+    })
 
 // ELIMINAR EQUIPO
 app.put('/delete/:id', (req, res) => {
@@ -691,15 +704,15 @@ app.route("/HojaVida")
             res.send({ message: `Hoja de vida del computador guardado` })
         })
     })
-    .patch((req, res) =>{
+    .patch((req, res) => {
 
         const id = req.body.id
         const estado = req.body.estado
 
         const slq = 'UPDATE hoja_de_vida SET estado = ? WHERE id = ?'
 
-        connection.query(slq,[estado,id],error => {
-            if(error) throw error
+        connection.query(slq, [estado, id], error => {
+            if (error) throw error
 
             res.send({
                 message: "Estado actualizado"
