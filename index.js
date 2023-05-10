@@ -29,10 +29,10 @@ app.use(bodyParser.json());
 
 //mysql
 const connection = mysql.createConnection({
-    host: 'autosfujiyama.com',
-    user: 'inventario',
-    password: '@Dminfuji76',
-    database: 'inventario',
+    host: '',
+    user: '',
+    password: '',
+    database: '',
 });
 
 // Route
